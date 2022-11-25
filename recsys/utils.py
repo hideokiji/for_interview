@@ -1,7 +1,8 @@
 import os 
 import json
 import pandas as pd 
-from for_interview import config 
+#from  config import *
+from recsys import config
 
 def get_data():
     os.chdir(config.dataset_dir)

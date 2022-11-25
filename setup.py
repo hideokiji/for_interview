@@ -8,14 +8,16 @@ def readme():
         return f.read()
 
 setup(
-    name='for_interview',
+    name='recsys',
     version='0.1',
-    description=readme(),
+    description='review pytorch-mlflow',
+    long_description=readme(),
 
     author='hideokiji',
     license='MIT',
     url='https://github.com/hideokiji/for_interview.git',
     
-    package=['for_interview'],
+    package=['recsys'],
     python_requires=">=3.6",
+    install_require=[required_packages],
 )
