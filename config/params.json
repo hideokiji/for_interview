@@ -1,0 +1,11 @@
+{
+  "num_wokers": 2,
+  "n_factors": 20,
+  "dropout_p": 0.5,
+  "batch_size":32,
+  "lr":0.4e-3,
+  "top_k": 5, 
+  "threshold": 0.5,
+  "patience": 10,
+}
+

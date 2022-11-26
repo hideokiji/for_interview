@@ -1,10 +1,14 @@
+from pathlib import Path 
+from typing import Dict, List  
+
 import torch 
 import torch.nn as nn 
 import torch.optim as optim 
 import torch.nn.functional as F  
 
 from argparse import Namespace 
-from utils import *
+#from utils import *
+from recsys import utils, config 
 
 class mfpt(nn.Module):
     def __init__(self,
@@ -41,10 +45,13 @@ class mfpt(nn.Module):
     def __call__(self, *args):
       return self.forward(*args)
 
+    def predict(seft, user, item):
+      return self.forward(user, item)
+
 def initialize_model(
         n_users: int = utils.get_data()['user_id'].nunique() + 1,
         n_items: int = utils.get_data()['item_id'].nunique() + 1,
-        params_fp: Path = Path(config.config_dir, "params,json"),
+        params_fp: Path = Path(config.config_dir, "params.json"),
         device: torch.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     )->nn.Module:
     params = Namespace(**utils.load_dict(params_fp))
@@ -52,6 +59,9 @@ def initialize_model(
     model = mfpt(
         n_users = n_users,
         n_items = n_items,
-        n_factors = n_factors,
-        dropout_p = 
+        n_factors = params.n_factors,
+        dropout_p = params.dropout_p
     )
+
+    model = model.to(device)
+    return model 

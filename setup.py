@@ -17,7 +17,7 @@ setup(
     license='MIT',
     url='https://github.com/hideokiji/for_interview.git',
     
-    package=['recsys'],
+    packages=['recsys'],
     python_requires=">=3.6",
-    install_require=[required_packages],
+    install_requires=[required_packages],
 )

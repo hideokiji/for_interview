@@ -1,6 +1,7 @@
 import os 
 import json
 import pandas as pd 
+from typing import Dict, List 
 #from  config import *
 from recsys import config
 
