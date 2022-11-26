@@ -7,7 +7,7 @@ import torch
 def predict(
     artifacts: Dict,
     dataset: torch.utils.data.Dataset = utils.get_data()
-    )
+    ):
 
     params = artifacts["params"]
     model = artifacts["model"]
@@ -46,7 +46,7 @@ def item_recommendation(
     items_id = torch.cat(items_id)
     users_id = torch.cat(users_id)
 
-    item_id_index = (items_id=item_id).nonzero(as_tuple=False)
+    item_id_index = (items_id==item_id).nonzero(as_tuple=False)
     user_id = users_id(item_id_index)
 
     dataset = utils.get_data()

@@ -24,7 +24,7 @@ class RCDataset(torch.utils.data.Dataset):
         )
 
 
-class DataLoader(object):
+class RCDataLoader(object):
     def __init__(self,
         params: Namespace,
         ratings):
@@ -32,7 +32,7 @@ class DataLoader(object):
         self.ratings = ratings 
         self.params = params 
         self.batch_size = self.params.batch_size 
-        self.train_ratings, self.test_ratings = self._leave_one_out(self, ratings)
+        self.train_ratings, self.test_ratings = self._leave_one_out(self.ratings)
 
     def _leave_one_out(self, ratings): 
         ratings["rank_latest"] = ratings.groupby(['user_id'])['timestamp'].rank(method='first', ascending=False)
@@ -54,8 +54,7 @@ class DataLoader(object):
             item_list = items,
             rating_list = ratings 
         )
-
-        return torch.utils.data.Dataloader(dataset, batch_size=self.batch_size, shuffle=True, num_workers=self.params.num_workers)
+        return torch.utils.data.dataloader(dataset, batch_size=self.batch_size, shuffle=True, num_workers=self.params.num_workers)
 
     def get_test_set(self):
         users, items, ratings = [], [], []
@@ -71,5 +70,4 @@ class DataLoader(object):
             item_list = items,
             rating_list = ratings 
         )
-
-        return torch.utils.data.Dataloader(dataset, batch_size=self.batch_size, shuffle=True, num_workers=self.params.num_workers)
+        return torch.utils.data.dataloader(dataset, batch_size=self.batch_size, shuffle=True, num_workers=self.params.num_workers)

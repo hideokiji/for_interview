@@ -20,4 +20,10 @@ setup(
     packages=['recsys'],
     python_requires=">=3.6",
     install_requires=[required_packages],
+
+    entry_points = {
+        'console_scripts':[
+            'recsys = app.cli:app',
+        ],
+    }
 )

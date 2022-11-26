@@ -6,6 +6,8 @@ import torch.nn.functional as F
 from argparse import Namespace 
 from pathlib import Path 
 import json 
+import optuna
+import mlflow 
 
 from recsys import utils, config 
 
@@ -80,24 +82,33 @@ class Trainer(object):
 
     def train(self, num_epochs, patience, train_dataloader, val_dataloader):
         best_val_loss = np.inf
-
         for epoch in range(num_epochs):
             train_loss = self.train_step(dataloader=train_dataloader)
             val_loss, _, _ = self.eval_step(dataloader=val_dataloader)
 
             self.scheduler.step(val_loss)
 
-
+            # early stopping 
             if val_loss < best_val_loss:
                 best_val_loss = val_loss
                 best_model = self.model
                 _patience = patience 
-
             else:
                 _patience -= 1 
             if not _patience:
                 print("Stopping early")
                 break 
+
+            # pruning 
+            if self.trial:
+                self.trial.report(val_loss, epoch)
+                if self.trial.report(val_loss, epoch):
+                    raise optuna.TrialPruned()
+
+            # Tracking --> bug 
+            mlflow.log_metrics(
+                {'train_loss': train_loss, 'val_loss':val_loss}, step=epoch 
+            )
 
             print(
               f"Epoch: {epoch + 1} |"
@@ -112,6 +123,7 @@ class Trainer(object):
 def train(
     params_fp: Path=Path(config.config_dir, "params.json"),
     device: torch.device = torch.device('cuda:0' if torch.cuda.is_available() else "cpu"),
+    trial: optuna.trial._trial.Trial = None 
     ):  
 
     params = Namespace(**utils.load_dict(params_fp))
@@ -144,9 +156,10 @@ def train(
         loss_fn = loss_fn,
         optimizer = optimizer,
         scheduler = scheduler,
+        trial = trial, 
     )
 
-    best_val_los, best_model = trainer.train(
+    best_val_loss, best_model = trainer.train(
         params.n_epochs, params.patience, train_dataloader, test_dataloader 
     )
 

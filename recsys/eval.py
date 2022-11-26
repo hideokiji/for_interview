@@ -50,7 +50,7 @@ def binary_feedback(ratings, threshold):
 
 def get_metrics(
     model,
-    dataloader: torch.utils.data.Dataloader,
+    dataloader: torch.utils.data.dataloader,
     top_k: int,
     y_true: np.ndarray,
     y_pred: np.ndarray,
@@ -73,7 +73,7 @@ def get_metrics(
 
 def evaluate(
     model,
-    dataloader : torch.utils.data.Dataloader,
+    dataloader : torch.utils.data.dataloader,
     params_fp: Path = Path(config.config_dir, "params.json"),
     device: torch.device = torch.device('cpu'),
     )->Tuple:

@@ -45,8 +45,8 @@ class mfpt(nn.Module):
     def __call__(self, *args):
       return self.forward(*args)
 
-    def predict(seft, user, item):
-      return self.forward(user, item)
+    def predict(self, user, item):
+      return self.forward(users, items)
 
 def initialize_model(
         n_users: int = utils.get_data()['user_id'].nunique() + 1,

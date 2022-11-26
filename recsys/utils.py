@@ -31,8 +31,6 @@ def get_data():
     movie_data.insert(6, 'IMDb URL', url_col)
     return movie_data
 
-print(get_data()['user_id'])
-
 def load_dict(filepath: str)-> Dict:
     with open(filepath, 'r') as fp:
         d = json.load(fp)
@@ -46,3 +44,15 @@ def save_dict(
     )->None:
     with open(filepath, 'w') as fp:
         json.dump(d, indent=2, fp=fp, sort_key=sortkeys)
+
+def set_seed(seed: int=1234)->None:
+    np.random.seed(seed)
+    random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+
+def delete_experiment(experiment_name: str):
+    client = mlflow.tracking.MflowClient()
+    experiment_id = client.get_experiment_by_name(experiment_name).experiment_id 
+    client.delete_experiment(experiment_id=experiment_id)
