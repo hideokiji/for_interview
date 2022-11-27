@@ -40,13 +40,13 @@ class mfpt(nn.Module):
 
         preds += torch.mul(self.dropout(user_embedding), self.dropout(item_embedding)).sum(dim=1, keepdim=True)
 
-        return preds.reshape(-1).sequeeze()
+        return preds.reshape(-1).squeeze()
 
     def __call__(self, *args):
       return self.forward(*args)
 
     def predict(self, user, item):
-      return self.forward(users, items)
+      return self.forward(user, item)
 
 def initialize_model(
         n_users: int = utils.get_data()['user_id'].nunique() + 1,

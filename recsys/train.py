@@ -8,13 +8,15 @@ from pathlib import Path
 import json 
 import optuna
 import mlflow 
+import numpy as np 
 
 from recsys import utils, config 
 
 class Trainer(object):
     def __init__(self,
         model,
-        device: torch.device=torch.device('cuda' if torch.cuda.is_available() else 'cpu'),
+        #device: torch.device=torch.device('cuda' if torch.cuda.is_available() else 'cpu'),
+        device: torch.device = torch.device("cpu"),
         loss_fn=None,
         optimizer=None,
         scheduler=None,
@@ -45,24 +47,24 @@ class Trainer(object):
             loss.backward()
             self.optimizer.step()
 
-            loss += loss.item() - loss 
+            loss += (loss.item() - loss)/(batch + 1) 
+        return loss 
 
-    def eval_step():
+    def eval_step(self, dataloader):
         self.model.eval()
 
         loss = 0.0 
-        predictions, label = [], []
+        predictions, labels = [], []
         with torch.no_grad():
             for batch, (user, item, label) in enumerate(dataloader):
                 prediction = self.model.predict(user, item)
-                J = self.loss_fn(prediction, label),item()
+                J = self.loss_fn(prediction, label).item()
 
                 loss += (J - loss)/(batch + 1)
 
                 prediction = prediction.numpy()
-                predictions.extend(predictions)
+                predictions.extend(prediction)
                 labels.extend(label.numpy())
-
         return loss, np.vstack(labels), np.vstack(predictions)
 
     def predict_step(self, dataloader):
@@ -71,10 +73,10 @@ class Trainer(object):
 
         with torch.no_grad():
             for batch, (user, item, label) in enumerate(dataloader):
-                prediction = self.model.prediction(user, item)
+                prediction = self.model.predict(user, item)
 
                 prediction = prediction.numpy()
-                predictions.extend(predictions)
+                predictions.extend(prediction)
 
                 labels.extend(label.numpy())
 
@@ -106,15 +108,16 @@ class Trainer(object):
                     raise optuna.TrialPruned()
 
             # Tracking --> bug 
+            """
             mlflow.log_metrics(
                 {'train_loss': train_loss, 'val_loss':val_loss}, step=epoch 
             )
-
+            """
             print(
-              f"Epoch: {epoch + 1} |"
-              f"train_loss: {train_loss:.5f},"
-              f"val_loss: {val_loss:.5f},"
-              f"lr: {self.optimizer.param_groups[0]['lr']:.2E},"
+              f"Epoch: {epoch + 1}",
+              f"train_loss: {train_loss:.5f}",
+              f"val_loss: {val_loss:.5f}",
+              f"lr: {self.optimizer.param_groups[0]['lr']:.2E}",
               f"patience: {_patience}"
             )
 
@@ -122,7 +125,8 @@ class Trainer(object):
 
 def train(
     params_fp: Path=Path(config.config_dir, "params.json"),
-    device: torch.device = torch.device('cuda:0' if torch.cuda.is_available() else "cpu"),
+    #device: torch.device = torch.device('cuda:0' if torch.cuda.is_available() else "cpu"),
+    device: torch.device = torch.device("cpu"),
     trial: optuna.trial._trial.Trial = None 
     ):  
 
@@ -132,9 +136,10 @@ def train(
     n_users = dataset['user_id'].nunique() + 1 
     n_items = dataset['item_id'].nunique() + 1 
 
-    dataloader = data.RCDataloader(params, dataset)
-    train_dataloader = dataloader.get_train_set()
-    test_dataloader = dataloader.get_test_set()
+    Dataloader = data.RCDataloader(params, dataset)
+    print(Dataloader)
+    train_dataloader = Dataloader.get_train_set()
+    test_dataloader = Dataloader.get_test_set()
 
     model = models.initialize(
         n_users = n_users,

@@ -1,9 +1,11 @@
+from argparse import Namespace
 import os 
 import json
 import pandas as pd 
 from typing import Dict, List 
 #from  config import *
 from recsys import config
+from pathlib import Path 
 
 def get_data():
     os.chdir(config.dataset_dir)
@@ -36,6 +38,10 @@ def load_dict(filepath: str)-> Dict:
         d = json.load(fp)
     return d 
 
+params_fp = Path(config.config_dir, "params.json")
+params = Namespace(**load_dict(params_fp))
+print(params)
+
 def save_dict(
     d: Dict,
     filepath: str,
@@ -43,7 +49,7 @@ def save_dict(
     sortkeys: bool=False 
     )->None:
     with open(filepath, 'w') as fp:
-        json.dump(d, indent=2, fp=fp, sort_key=sortkeys)
+        json.dump(d, indent=2, fp=fp, sort_keys=sortkeys)
 
 def set_seed(seed: int=1234)->None:
     np.random.seed(seed)

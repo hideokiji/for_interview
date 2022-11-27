@@ -1,6 +1,6 @@
 {
   "n_factors": 20,
-  "num_trials": 3,
+  "num_trials": 5,
   "dropout_p": 0.6030541229474378,
   "sparse": true,
   "cuda": true,
@@ -8,7 +8,7 @@
   "batch_size": 32,
   "lr": 3.026804588629808e-05,
   "weight_decay": 0,
-  "n_epochs": 5,
+  "n_epochs": 20,
   "random_seed": 1234,
   "num_workers": 0,
   "eval_metrics": "f1",

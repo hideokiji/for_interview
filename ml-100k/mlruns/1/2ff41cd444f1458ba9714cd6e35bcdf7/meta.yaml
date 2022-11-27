@@ -1,0 +1,15 @@
+artifact_uri: file:///home/nguyen/for_interview/ml-100k/mlruns/1/2ff41cd444f1458ba9714cd6e35bcdf7/artifacts
+end_time: 1669556758161
+entry_point_name: ''
+experiment_id: '1'
+lifecycle_stage: active
+name: ''
+run_id: 2ff41cd444f1458ba9714cd6e35bcdf7
+run_uuid: 2ff41cd444f1458ba9714cd6e35bcdf7
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1669556758150
+status: 3
+tags: []
+user_id: nguyen

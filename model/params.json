@@ -1,0 +1,21 @@
+{
+  "n_factors": 20,
+  "num_trials": 3,
+  "dropout_p": 0.6030541229474378,
+  "sparse": true,
+  "cuda": true,
+  "shuffle": true,
+  "batch_size": 32,
+  "lr": 4.0928325798856065e-05,
+  "weight_decay": 0,
+  "n_epochs": 5,
+  "random_seed": 1234,
+  "num_workers": 0,
+  "eval_metrics": "f1",
+  "top_k": 5,
+  "threshold": 3.5043004714091954,
+  "patience": 10,
+  "save_model": false,
+  "model": "mfpt",
+  "dropout": 0.31753196304622994
+}

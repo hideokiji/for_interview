@@ -54,7 +54,8 @@ def get_metrics(
     top_k: int,
     y_true: np.ndarray,
     y_pred: np.ndarray,
-    device: torch.device('cuda:0' if torch.cuda.is_available else 'cpu')
+    #device: torch.device('cuda:0' if torch.cuda.is_available else 'cpu')
+    device: torch.device = torch.device("cpu")
 )->Dict:
 
 
@@ -75,7 +76,8 @@ def evaluate(
     model,
     dataloader : torch.utils.data.dataloader,
     params_fp: Path = Path(config.config_dir, "params.json"),
-    device: torch.device = torch.device('cpu'),
+    #device: torch.device = torch.device('cuda:0' if torch.cuda.is_available() else "cpu"),
+    device: torch.device = torch.device("cpu")  
     )->Tuple:
 
     params = Namespace(**utils.load_dict(params_fp))
@@ -88,4 +90,6 @@ def evaluate(
     y_pred = binary_feedback(y_pred, params.threshold)
 
     performance = {}
-    performance = get_metrics(mdoel, dataloader, params.top_k, y_true, y_pred, device )
+    performance = get_metrics(model, dataloader, params.top_k, y_true, y_pred, device )
+
+    return performance
